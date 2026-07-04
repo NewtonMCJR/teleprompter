@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teleprompt Inteligente - Leitura Clara e Articulada</title>
+  <meta name="description" content="Um sistema de teleprompter premium e inteligente com rolagem por voz, espelhamento físico, controle de velocidade e suporte a importação de arquivos para oradores e narradores.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= TELA DE PREPARAÇÃO ================= -->
+  <main id="setup-screen" class="setup-container">
+    <header class="main-header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+          <polygon points="23 7 16 12 23 17 23 7"></polygon>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+          <circle cx="9" cy="12" r="2" fill="currentColor"></circle>
+        </svg>
+        <h1>Teleprompt<span>Flow</span></h1>
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="btn-icon" title="Alternar Tema" aria-label="Alternar Tema">
+          <!-- Moon Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon moon-icon">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <!-- Sun Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon hidden">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="setup-grid">
+      <!-- Painel Esquerdo: Entrada de Texto e Importação -->
+      <section class="editor-section card">
+        <div class="card-header">
+          <h2>Conteúdo para Narração</h2>
+          <div class="import-options">
+            <label for="file-upload" class="btn-import">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Importar Arquivo (.txt, .md)</span>
+            </label>
+            <input type="file" id="file-upload" accept=".txt,.md" style="display: none;">
+          </div>
+        </div>
+
+        <div id="drop-zone" class="drop-zone">
+          <textarea id="text-input" placeholder="Escreva, cole ou arraste seu texto aqui...
+          
+Dica: Use parágrafos claros para facilitar a leitura. Você também pode testar carregando um dos nossos modelos abaixo!"></textarea>
+          <div class="drop-indicator">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            <p>Solte o arquivo para importar o texto</p>
+          </div>
+        </div>
+
+        <div class="editor-footer">
+          <div class="presets">
+            <span>Modelos rápidos:</span>
+            <button class="btn-preset" id="preset-discurso">Discurso Inspirador</button>
+            <button class="btn-preset" id="preset-noticia">Noticiário de TV</button>
+            <button class="btn-preset" id="preset-dicas">Dicas de Oratória</button>
+          </div>
+          <div id="word-count" class="meta-info">0 palavras • ~0 min de leitura</div>
+        </div>
+      </section>
+
+      <!-- Painel Direito: Configurações Gerais -->
+      <aside class="config-section">
+        <div class="card settings-card">
+          <h2>Ajustes Iniciais</h2>
+          
+          <div class="control-group">
+            <div class="control-label">
+              <label for="speed-slider">Velocidade da Leitura</label>
+              <span id="speed-value" class="badge">120 WPM</span>
+            </div>
+            <input type="range" id="speed-slider" min="50" max="300" step="5" value="120">
+            <p class="control-hint">WPM (Palavras Por Minuto): Ajuste o ritmo ideal para sua voz.</p>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="font-size-slider">Tamanho do Texto</label>
+              <span id="font-size-value" class="badge">4.5rem</span>
+            </div>
+            <input type="range" id="font-size-slider" min="2" max="8" step="0.1" value="4.5">
+          </div>
+
+          <div class="control-group">
+            <label>Largura do Texto</label>
+            <div class="segmented-control">
+              <input type="radio" name="text-width" id="width-narrow" value="narrow">
+              <label for="width-narrow">Estreito</label>
+              
+              <input type="radio" name="text-width" id="width-medium" value="medium" checked>
+              <label for="width-medium">Médio</label>
+              
+              <input type="radio" name="text-width" id="width-wide" value="wide">
+              <label for="width-wide">Largo</label>
+            </div>
+            <p class="control-hint">Mantenha estreito para evitar mover muito a cabeça ao ler.</p>
+          </div>
+
+          <div class="control-group">
+            <label>Recursos Especiais</label>
+            
+            <div class="toggle-control">
+              <div class="toggle-text">
+                <span class="toggle-title">Guia Visual de Foco</span>
+                <span class="toggle-desc">Destaca a linha central para facilitar a leitura.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="guide-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-control">
+              <div class="toggle-text">
+                <span class="toggle-title">Modo Espelhamento (Flip)</span>
+                <span class="toggle-desc">Espelha o texto horizontalmente para uso físico.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="mirror-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-control" id="speech-control-wrapper">
+              <div class="toggle-text">
+                <span class="toggle-title">Rolagem por Voz (Beta)</span>
+                <span class="toggle-desc">Acompanha a velocidade da sua fala automaticamente.</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="voice-scroll-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <button id="start-prompter-btn" class="btn-primary">
+            <span>Iniciar Teleprompter</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </button>
+        </div>
+
+        <div class="card shortcuts-card">
+          <h3>Atalhos de Teclado</h3>
+          <ul class="shortcuts-list">
+            <li><kbd>Espaço</kbd> <span>Iniciar / Pausar rolagem</span></li>
+            <li><kbd>⇅ Setas</kbd> <span>Aumentar / Diminuir velocidade</span></li>
+            <li><kbd>⇄ Setas</kbd> <span>Aumentar / Diminuir tamanho do texto</span></li>
+            <li><kbd>Esc</kbd> <span>Sair do Teleprompter</span></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ================= TELA DO TELEPROMPTER (PLAYBACK) ================= -->
+  <div id="prompter-screen" class="prompter-container hidden">
+    <!-- Indicador de Guia Visual (Linha Central de Leitura) -->
+    <div id="reading-guide" class="reading-guide-line">
+      <div class="guide-arrow guide-arrow-left"></div>
+      <div class="guide-arrow guide-arrow-right"></div>
+    </div>
+
+    <!-- Contêiner do Texto de Rolagem -->
+    <div id="prompter-viewport" class="prompter-viewport width-medium">
+      <div id="prompter-content" class="prompter-content">
+        <!-- O texto rolante é inserido aqui -->
+      </div>
+    </div>
+
+    <!-- Contadores Informativos Suspensos superiores -->
+    <div class="prompter-header-stats">
+      <div class="stat-badge progress-stat">
+        <span class="stat-label">Progresso</span>
+        <span id="stat-progress">0%</span>
+      </div>
+      <div class="stat-badge time-stat">
+        <span class="stat-label">Restante</span>
+        <span id="stat-time">00:00</span>
+      </div>
+      <div id="voice-indicator" class="stat-badge voice-stat hidden">
+        <span class="voice-dot"></span>
+        <span id="voice-stat-label">Voz Ativa</span>
+      </div>
+    </div>
+
+    <!-- Tela de Contagem Regressiva -->
+    <div id="countdown-overlay" class="countdown-overlay hidden">
+      <div id="countdown-number" class="countdown-number">3</div>
+    </div>
+
+    <!-- Painel Flutuante de Controle (Glassmorphism) -->
+    <nav class="floating-controls-wrapper">
+      <div class="floating-controls">
+        
+        <!-- Sair -->
+        <button id="exit-prompter-btn" class="ctrl-btn" title="Voltar (Esc)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Diminuir Fonte -->
+        <button id="font-decrease-btn" class="ctrl-btn" title="Diminuir Texto (Seta Esquerda)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14h6M4 20h6M4 8h6M15 6L11 12h8zM15 18L11 12h8z"/>
+          </svg>
+        </button>
+
+        <!-- Tamanho Atual -->
+        <span id="ctrl-font-badge" class="ctrl-badge">4.5</span>
+
+        <!-- Aumentar Fonte -->
+        <button id="font-increase-btn" class="ctrl-btn" title="Aumentar Texto (Seta Direita)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14h6M4 20h6M4 8h6M11 6L15 12h-8zM11 18L15 12h-8z"/>
+          </svg>
+        </button>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Diminuir Velocidade -->
+        <button id="speed-decrease-btn" class="ctrl-btn" title="Diminuir Velocidade (Seta Baixo)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+
+        <!-- Botão Play/Pause principal -->
+        <button id="play-pause-btn" class="ctrl-btn btn-play" title="Play/Pause (Espaço)">
+          <!-- Play Icon -->
+          <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="play-svg">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <!-- Pause Icon -->
+          <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="pause-svg hidden">
+            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+          </svg>
+        </button>
+
+        <!-- Velocidade Atual -->
+        <span id="ctrl-speed-badge" class="ctrl-badge">120 WPM</span>
+
+        <!-- Aumentar Velocidade -->
+        <button id="speed-increase-btn" class="ctrl-btn" title="Aumentar Velocidade (Seta Cima)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Alternar Guia Visual -->
+        <button id="ctrl-guide-btn" class="ctrl-btn active" title="Alternar Guia Visual">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+
+        <!-- Alternar Espelhamento -->
+        <button id="ctrl-mirror-btn" class="ctrl-btn" title="Alternar Espelhamento (Flip)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20M16 8l4 4-4 4M8 8l-4 4 4 4"></path>
+          </svg>
+        </button>
+
+        <!-- Alternar Rolagem por Voz -->
+        <button id="ctrl-voice-btn" class="ctrl-btn" title="Rolagem por Voz">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
